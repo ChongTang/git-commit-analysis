@@ -1,0 +1,22 @@
+{
+  "name": "git-commit-analysis",
+  "description": "Git commit analysis",
+  "main": "Gulpfile.js",
+  "authors": [
+    "Chong Tang"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Git",
+    "Commit"
+  ],
+  "homepage": "https://github.com/ChongTang/git-commit-analysis",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

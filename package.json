@@ -1,0 +1,30 @@
+{
+  "name": "git-commit-analysis",
+  "version": "0.0.1",
+  "description": "Git commit analysis",
+  "main": "Gulpfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "asar": "^0.9.0",
+    "electron-prebuilt": "^0.36.3",
+    "fs-jetpack": "^0.7.1",
+    "rcedit": "^0.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChongTang/git-commit-analysis.git"
+  },
+  "keywords": [
+    "Git",
+    "Commit"
+  ],
+  "author": "Chong Tang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChongTang/git-commit-analysis/issues"
+  },
+  "homepage": "https://github.com/ChongTang/git-commit-analysis#readme"
+}
