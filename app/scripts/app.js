@@ -9,12 +9,6 @@
         'ngAnimate'
     ])
         .config(['$routeProvider', function ($routeProvider) {
-            // $routeProvider.when('/', {
-            //     templateUrl: _templateBase + '/customer/customer.html',
-            //     controller: 'customerController',
-            //     controllerAs: '_ctrl'
-            // });
-            // $routeProvider.otherwise({ redirectTo: '/' });
             $routeProvider.when('/', {
                 templateUrl: _templateBase + '/project/project.html',
                 controller: 'projectController',
