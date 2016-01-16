@@ -6,6 +6,7 @@
     function ProjectController(projectService, $q, $mdDialog, $scope) {
         var remote = require('remote');
         var dialog = remote.require('dialog');
+        var git = require(git-utils);
         var self = this;
 
         self.selected = null;
@@ -33,6 +34,8 @@
             dialog.showOpenDialog(options, function (folder) {
                 self.selected.choosenPath = folder;
                 console.log('path = ' + folder);
+                // scan the selected path
+                var repository = git.open(folder);
             });
         }
 

@@ -8,6 +8,7 @@
     "electron": "^0.4.1",
     "electron-prebuilt": "^0.31.2",
     "fs-jetpack": "^0.7.1",
+    "git-utils": "^4.1.0",
     "gulp": "^3.9.0",
     "gulp-copy": "0.0.2",
     "gulp-minify-css": "^1.2.3",
