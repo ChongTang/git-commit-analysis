@@ -9,12 +9,6 @@
         'ngAnimate'
     ])
         .config(['$routeProvider', function ($routeProvider) {
-            // $routeProvider.when('/', {
-            //     templateUrl: _templateBase + '/customer/customer.html',
-            //     controller: 'customerController',
-            //     controllerAs: '_ctrl'
-            // });
-            // $routeProvider.otherwise({ redirectTo: '/' });
             $routeProvider.when('/', {
                 templateUrl: _templateBase + '/project/project.html',
                 controller: 'projectController',
@@ -23,195 +17,6 @@
             $routeProvider.otherwise({ redirectTo: '/' });
         }
         ]);
-
-})();
-(function () {
-    'use strict';
-    var mysql = require('mysql');
-    
-    // Creates MySql database connection
-    var connection = mysql.createConnection({
-        host: "localhost",
-        user: "gitcommit",
-        password: "commit",
-        database: "GitCommit"
-    });
-
-    angular.module('app')
-        .service('customerService', ['$q', CustomerService]);
-
-    function CustomerService($q) {
-        return {
-            getCustomers: getCustomers,
-            getById: getCustomerById,
-            getByName: getCustomerByName,
-            create: createCustomer,
-            destroy: deleteCustomer,
-            update: updateCustomer
-        };
-
-        function getCustomers() {
-            var deferred = $q.defer();
-            var query = "SELECT * FROM customers";
-            connection.query(query, function (err, rows) {
-                if (err) deferred.reject(err);
-                deferred.resolve(rows);
-            });
-            return deferred.promise;
-        }
-
-        function getCustomerById(id) {
-            var deferred = $q.defer();
-            var query = "SELECT * FROM customers WHERE customer_id = ?";
-            connection.query(query, [id], function (err, rows) {
-                if (err) deferred.reject(err);
-                deferred.resolve(rows);
-            });
-            return deferred.promise;
-        }
-
-        function getCustomerByName(name) {
-            var deferred = $q.defer();
-            var query = "SELECT * FROM customers WHERE name LIKE  '" + name + "%'";
-            connection.query(query, [name], function (err, rows) {
-                if (err) deferred.reject(err);
-
-                deferred.resolve(rows);
-            });
-            return deferred.promise;
-        }
-
-        function createCustomer(customer) {
-            var deferred = $q.defer();
-            var query = "INSERT INTO customers SET ?";
-            connection.query(query, customer, function (err, res) {
-                if (err) deferred.reject(err);
-                deferred.resolve(res.insertId);
-            });
-            return deferred.promise;
-        }
-
-        function deleteCustomer(id) {
-            var deferred = $q.defer();
-            var query = "DELETE FROM customers WHERE customer_id = ?";
-            connection.query(query, [id], function (err, res) {
-                if (err) deferred.reject(err);
-                deferred.resolve(res.affectedRows);
-            });
-            return deferred.promise;
-        }
-
-        function updateCustomer(customer) {
-            var deferred = $q.defer();
-            var query = "UPDATE customers SET name = ?, email = ? WHERE customer_id = ?";
-            connection.query(query, [customer.name, customer.email, customer.customer_id], function (err, res) {
-                if (err) deferred.reject(err);
-                deferred.resolve(res);
-            });
-            return deferred.promise;
-        }
-    }
-})();
-(function () {
-    'use strict';
-    angular.module('app')
-        .controller('customerController', ['customerService', '$q', '$mdDialog', CustomerController]);
-
-    function CustomerController(customerService, $q, $mdDialog) {
-        var self = this;
-
-        self.selected = null;
-        self.customers = [];
-        self.selectedIndex = 0;
-        self.filterText = null;
-        self.selectCustomer = selectCustomer;
-        self.deleteCustomer = deleteCustomer;
-        self.saveCustomer = saveCustomer;
-        self.createCustomer = createCustomer;
-        self.filter = filterCustomer;
-        
-        // Load initial data
-        getAllCustomers();
-        
-        //----------------------
-        // Internal functions 
-        //----------------------
-        
-        function selectCustomer(customer, index) {
-            self.selected = angular.isNumber(customer) ? self.customers[customer] : customer;
-            self.selectedIndex = angular.isNumber(customer) ? customer : index;
-        }
-
-        function deleteCustomer($event) {
-            var confirm = $mdDialog.confirm()
-                .title('Are you sure?')
-                .content('Are you sure want to delete this customer?')
-                .ok('Yes')
-                .cancel('No')
-                .targetEvent($event);
-
-
-            $mdDialog.show(confirm).then(function () {
-                customerService.destroy(self.selected.customer_id).then(function (affectedRows) {
-                    self.customers.splice(self.selectedIndex, 1);
-                });
-            }, function () { });
-        }
-
-        function saveCustomer($event) {
-            if (self.selected != null && self.selected.customer_id != null) {
-                customerService.update(self.selected).then(function (affectedRows) {
-                    $mdDialog.show(
-                        $mdDialog
-                            .alert()
-                            .clickOutsideToClose(true)
-                            .title('Success')
-                            .content('Data Updated Successfully!')
-                            .ok('Ok')
-                            .targetEvent($event)
-                        );
-                });
-            }
-            else {
-                //self.selected.customer_id = new Date().getSeconds();
-                customerService.create(self.selected).then(function (affectedRows) {
-                    $mdDialog.show(
-                        $mdDialog
-                            .alert()
-                            .clickOutsideToClose(true)
-                            .title('Success')
-                            .content('Data Added Successfully!')
-                            .ok('Ok')
-                            .targetEvent($event)
-                        );
-                });
-            }
-        }
-
-        function createCustomer() {
-            self.selected = {};
-            self.selectedIndex = null;
-        }
-
-        function getAllCustomers() {
-            customerService.getCustomers().then(function (customers) {
-                self.customers = [].concat(customers);
-                self.selected = customers[0];
-            });
-        }
-
-        function filterCustomer() {
-            if (self.filterText == null || self.filterText == "") {
-                getAllCustomers();
-            }
-            else {
-                customerService.getByName(self.filterText).then(function (customers) {
-                    self.customers = [].concat(customers);
-                    self.selected = customers[0];
-                });
-            }
-        }
-    }
 
 })();
 (function () {
@@ -292,8 +97,8 @@
 
         function updateProject(project) {
             var deferred = $q.defer();
-            var query = "UPDATE projects SET name = ?, email = ? WHERE project_id = ?";
-            connection.query(query, [project.name, project.email, project.project_id], function (err, res) {
+            var query = "UPDATE projects SET name = ? WHERE project_id = ?";
+            connection.query(query, [project.name, project.project_id], function (err, res) {
                 if (err) deferred.reject(err);
                 deferred.resolve(res);
             });
@@ -304,9 +109,12 @@
 (function () {
     'use strict';
     angular.module('app')
-        .controller('projectController', ['projectService', '$q', '$mdDialog', ProjectController]);
-
-    function ProjectController(projectService, $q, $mdDialog) {
+        .controller('projectController', ['projectService', '$q', '$mdDialog', '$scope', ProjectController]);
+        
+    function ProjectController(projectService, $q, $mdDialog, $scope) {
+        var remote = require('remote');
+        var dialog = remote.require('dialog');
+        var git = require('git-utils');
         var self = this;
 
         self.selected = null;
@@ -318,6 +126,7 @@
         self.saveProject = saveProject;
         self.createProject = createProject;
         self.filter = filterProject;
+        self.selectPath = selectPath;
         
         // Load initial data
         getAllProjects();
@@ -325,7 +134,25 @@
         //----------------------
         // Internal functions 
         //----------------------
-        
+        function selectPath() {
+            var options = {
+                title: 'Choose Project Path',
+                properties: ['openDirectory']
+            };
+            dialog.showOpenDialog(options, function (folder) {
+                self.selected.choosenPath = folder;
+                console.log('path = ' + folder);
+                // scan the selected path
+                var repository = git.open(folder);
+                if(repository === null) {
+                    // This is not a valid repository, display an error message here
+                    window.alert('The selected path is not a legal Git repo!');
+                    return;
+                }
+                // if right, go ahead to analyze the selected repo
+            });
+        }
+
         function selectProject(project, index) {
             self.selected = angular.isNumber(project) ? self.projects[project] : project;
             self.selectedIndex = angular.isNumber(project) ? project : index;

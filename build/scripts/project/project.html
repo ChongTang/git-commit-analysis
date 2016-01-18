@@ -30,7 +30,9 @@
                 <md-content layout-padding class="autoScroll">
                     <md-input-container>
                         <label>Project Path</label>
-                        <input ng-model="_ctrl.selected.projectPath" type="text">
+                        <input type="text" ng-model="_ctrl.selected.choosenPath">
+                        <!--<input id="project_path" type="file" webkitdirectory directory>-->
+                        <button ng-click="_ctrl.selectPath()">Select Path...</button>
                     </md-input-container>
                 </md-content>
                 <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
