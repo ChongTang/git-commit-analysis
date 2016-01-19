@@ -41,10 +41,13 @@
 
         function scanRepo() {
             var repository = git.Repository.open(self.selected.choosenPath)
-                .then(function (repo) {
+                .then(function (err, repo) {
                     // opened correctly
-                }, function (openFailure) {
-                    window.alert('The selected path is not a legal Git repo!');
+                    if(err){
+                        window.alert('The selected path is not a legal Git repo!');
+                        return;    
+                    }
+                    
                 });
         }
 

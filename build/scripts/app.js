@@ -110,11 +110,11 @@
     'use strict';
     angular.module('app')
         .controller('projectController', ['projectService', '$q', '$mdDialog', '$scope', ProjectController]);
-        
+
     function ProjectController(projectService, $q, $mdDialog, $scope) {
         var remote = require('remote');
         var dialog = remote.require('dialog');
-        var git = require('git-utils');
+        var git = require("nodegit");
         var self = this;
 
         self.selected = null;
@@ -127,6 +127,7 @@
         self.createProject = createProject;
         self.filter = filterProject;
         self.selectPath = selectPath;
+        self.scanRepo = scanRepo;
         
         // Load initial data
         getAllProjects();
@@ -143,14 +144,19 @@
                 self.selected.choosenPath = folder;
                 console.log('path = ' + folder);
                 // scan the selected path
-                var repository = git.open(folder);
-                if(repository === null) {
-                    // This is not a valid repository, display an error message here
-                    window.alert('The selected path is not a legal Git repo!');
-                    return;
-                }
-                // if right, go ahead to analyze the selected repo
             });
+        }
+
+        function scanRepo() {
+            var repository = git.Repository.open(self.selected.choosenPath)
+                .then(function (err, repo) {
+                    // opened correctly
+                    if(err){
+                        window.alert('The selected path is not a legal Git repo!');
+                        return;    
+                    }
+                    
+                });
         }
 
         function selectProject(project, index) {
